@@ -19,6 +19,12 @@ public class CuentaController {
         return service.listadeCuenta();
     }
 
+    @GetMapping("{numeroCuenta}")
+    public Cuenta obtener_Cuenta (@PathVariable Integer numeroCuenta){
+        return service.obtenerCuenta(numeroCuenta);
+    }
+
+
     @PostMapping
     public Cuenta registrar(@RequestBody Cuenta a){
         return service.registrar(a);

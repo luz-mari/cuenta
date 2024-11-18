@@ -31,6 +31,22 @@ public class CuentaServiceImpl implements CuentaService {
     }
 
     @Override
+    public Cuenta obtenerCuenta(Integer numeroCuenta) {
+        var cuentaEncontrada = repository.findById(numeroCuenta);
+        if (cuentaEncontrada.isPresent()) {
+            var cuenta = new Cuenta();
+            var cuentaDao = cuentaEncontrada.get();
+            cuenta.setNumero_cuenta(cuentaDao.getNumero_cuenta());
+            cuenta.setTipo_cuenta(cuentaDao.getTipo_cuenta());
+            cuenta.setId_cliente(cuentaDao.getId_cliente());
+            cuenta.setSaldo(cuentaDao.getSaldo());
+            return cuenta;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     public Cuenta registrar(Cuenta a) {
         var cuentaDao = new CuentaDao();
         cuentaDao.setNumero_cuenta(a.getNumero_cuenta());
