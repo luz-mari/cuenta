@@ -3,6 +3,7 @@ package com.proyecto.ntt.cuenta.controller;
 import com.proyecto.ntt.cuenta.controller.dto.Cuenta;
 import com.proyecto.ntt.cuenta.controller.dto.Movimiento;
 import com.proyecto.ntt.cuenta.service.MovimientoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class MovimientoController {
 
 
     @PostMapping
-    public Movimiento registrar(@RequestBody Movimiento a){
+    public Movimiento registrar(@RequestBody @Valid Movimiento a){
         return service.registrar(a);
     }
 

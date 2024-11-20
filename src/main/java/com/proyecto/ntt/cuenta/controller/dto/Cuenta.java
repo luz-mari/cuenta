@@ -7,7 +7,7 @@ import lombok.Data;
 public class Cuenta {
     private Integer numero_cuenta;
     private Integer tipo_cuenta;
-    private double saldo;
+    private double saldo = 0.0;
     private Integer id_cliente;
 
 }

@@ -2,6 +2,7 @@ package com.proyecto.ntt.cuenta.controller;
 
 import com.proyecto.ntt.cuenta.controller.dto.Cuenta;
 import com.proyecto.ntt.cuenta.service.CuentaService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class CuentaController {
 
 
     @PostMapping
-    public Cuenta registrar(@RequestBody Cuenta a){
+    public Cuenta registrar(@RequestBody @Valid Cuenta a){
         return service.registrar(a);
     }
 
