@@ -5,18 +5,26 @@ import com.proyecto.ntt.cuenta.controller.dto.Cuenta;
 import com.proyecto.ntt.cuenta.repository.CuentaRepository;
 import com.proyecto.ntt.cuenta.repository.dao.CuentaDao;
 import com.proyecto.ntt.cuenta.service.CuentaService;
+import com.proyecto.ntt.cuenta.service.dto.Cliente;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-@RequiredArgsConstructor
+@Slf4j
 @Service
-
 public class CuentaServiceImpl implements CuentaService {
+    public CuentaServiceImpl(CuentaRepository repository, WebClient.Builder webClientBuilder) {
+        this.repository = repository;
+        this.webClient = webClientBuilder.baseUrl("http://localhost:8080").build();
+    }
 
     private final CuentaRepository repository;
+    private final WebClient webClient;
 
     @Override
     public List<Cuenta> listadeCuenta() {
@@ -47,19 +55,26 @@ public class CuentaServiceImpl implements CuentaService {
     }
 
     @Override
-    public Cuenta registrar(Cuenta a) {
-        var cuentaDao = new CuentaDao();
-        cuentaDao.setNumero_cuenta(a.getNumero_cuenta());
-        cuentaDao.setTipo_cuenta(a.getTipo_cuenta());
-        cuentaDao.setSaldo(a.getSaldo());
-        cuentaDao.setId_cliente(a.getId_cliente());
-        var cuentaRegistrada = repository.save(cuentaDao);
-        Cuenta cuenta = new Cuenta();
-        cuenta.setNumero_cuenta(cuentaRegistrada.getNumero_cuenta());
-        cuenta.setTipo_cuenta(cuentaRegistrada.getTipo_cuenta());
-        cuenta.setSaldo(cuentaRegistrada.getSaldo());
-        cuenta.setId_cliente(cuentaRegistrada.getId_cliente());
-        return cuenta;
+    public Mono<Cuenta> registrar(Cuenta a) {
+        var idCliente = a.getId_cliente();
+        return obtenerClientePorId(idCliente).map(cliente -> {
+            if(cliente==null){
+                log.error("Cliente no encontrado");
+                throw new RuntimeException("El cliente no existe");
+            }
+            var cuentaDao = new CuentaDao();
+            cuentaDao.setNumero_cuenta(a.getNumero_cuenta());
+            cuentaDao.setTipo_cuenta(a.getTipo_cuenta());
+            cuentaDao.setSaldo(a.getSaldo());
+            cuentaDao.setId_cliente(a.getId_cliente());
+            var cuentaRegistrada = repository.save(cuentaDao);
+            Cuenta cuenta = new Cuenta();
+            cuenta.setNumero_cuenta(cuentaRegistrada.getNumero_cuenta());
+            cuenta.setTipo_cuenta(cuentaRegistrada.getTipo_cuenta());
+            cuenta.setSaldo(cuentaRegistrada.getSaldo());
+            cuenta.setId_cliente(cuentaRegistrada.getId_cliente());
+            return cuenta;
+        });
     }
 
     @Override
@@ -83,5 +98,21 @@ public class CuentaServiceImpl implements CuentaService {
         if (cuentaEncontrada.isPresent()){
             repository.delete(cuentaEncontrada.get());
         }
+    }
+
+    public Mono<Cliente> obtenerClientePorId(Integer id) {
+        return webClient.get() // Usamos GET para obtener los datos
+                .uri("/clientes/{id}", id) // El id se pasa como parte de la URL
+                .retrieve() // Recupera la respuesta
+                .onStatus(
+                        status -> status.is4xxClientError(), // Manejo de errores 4xx
+                        response -> Mono.error(new RuntimeException("Error del cliente: " + response.statusCode()))
+                )
+                .onStatus(
+                        status -> status.is5xxServerError(), // Manejo de errores 5xx
+                        response -> Mono.error(new RuntimeException("Error del servidor: " + response.statusCode()))
+                )
+                .bodyToMono(Cliente.class)
+                .switchIfEmpty(Mono.error(new RuntimeException("El cuerpo esta vacio"))); // Mapea la respuesta a la clase Cliente
     }
 }
