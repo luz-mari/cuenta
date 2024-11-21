@@ -62,6 +62,9 @@ public class CuentaServiceImpl implements CuentaService {
                 log.error("Cliente no encontrado");
                 throw new RuntimeException("El cliente no existe");
             }
+            if(a.getTipo_cuenta() != 0 && a.getTipo_cuenta() != 1) {
+                throw new RuntimeException("El tipo de cuenta no es valido");
+            }
             var cuentaDao = new CuentaDao();
             cuentaDao.setNumero_cuenta(a.getNumero_cuenta());
             cuentaDao.setTipo_cuenta(a.getTipo_cuenta());
