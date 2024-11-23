@@ -1,18 +1,17 @@
 package com.proyecto.ntt.cuenta.repository.dao;
 
-import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
-@Entity
-@Table (name="movimiento")
-
+@Document(collection="movimiento")
 public class MovimientoDao {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Integer id= UUID.randomUUID().hashCode();
     private Integer numero_cuenta;
     private String descripcion;
     private double monto;

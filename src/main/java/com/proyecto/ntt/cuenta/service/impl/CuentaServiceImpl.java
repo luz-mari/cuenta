@@ -66,7 +66,6 @@ public class CuentaServiceImpl implements CuentaService {
                 throw new RuntimeException("El tipo de cuenta no es valido");
             }
             var cuentaDao = new CuentaDao();
-            cuentaDao.setNumero_cuenta(a.getNumero_cuenta());
             cuentaDao.setTipo_cuenta(a.getTipo_cuenta());
             cuentaDao.setSaldo(a.getSaldo());
             cuentaDao.setId_cliente(a.getId_cliente());

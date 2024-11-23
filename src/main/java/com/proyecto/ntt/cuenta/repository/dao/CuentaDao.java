@@ -1,18 +1,19 @@
 package com.proyecto.ntt.cuenta.repository.dao;
 
-import jakarta.persistence.*;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.UUID;
 
 
 @Data
-@Entity
-@Table(name="cuentas")
-
+@Document(collection="cuentas")
 public class CuentaDao {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer numero_cuenta;
+    private Integer numero_cuenta= UUID.randomUUID().hashCode();
     @NotNull
     private Integer tipo_cuenta;
     @NotNull
