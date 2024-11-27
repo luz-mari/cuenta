@@ -29,10 +29,10 @@ public class MovimientoServiceImpl implements MovimientoService {
                 .map(movimientoDao -> {
                     Movimiento movimiento = new Movimiento();
                     movimiento.setId(movimientoDao.getId());
-                    movimiento.setDescripcion(movimiento.getDescripcion());
-                    movimiento.setFecha(movimiento.getFecha());
-                    movimiento.setMonto(movimiento.getMonto());
-                    movimiento.setNumero_cuenta(movimiento.getNumero_cuenta());
+                    movimiento.setDescripcion(movimientoDao.getDescripcion());
+                    movimiento.setFecha(movimientoDao.getFecha());
+                    movimiento.setMonto(movimientoDao.getMonto());
+                    movimiento.setNumero_cuenta(movimientoDao.getNumero_cuenta());
                     return movimiento;
                 }).toList();
     }
@@ -79,7 +79,6 @@ public class MovimientoServiceImpl implements MovimientoService {
         }
         saldo = a.getMonto()+saldo;
         var movimientoDao = new MovimientoDao();
-        movimientoDao.setId(a.getId());
         movimientoDao.setDescripcion(a.getDescripcion());
         movimientoDao.setNumero_cuenta(a.getNumero_cuenta());
         movimientoDao.setMonto(a.getMonto());
