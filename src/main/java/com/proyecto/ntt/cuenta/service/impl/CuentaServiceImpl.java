@@ -29,7 +29,8 @@ public class CuentaServiceImpl implements CuentaService {
     @Override
     public List<Cuenta> listadeCuenta() {
         return StreamSupport.stream(repository.findAll().spliterator(), false)
-                .map(cuentaDaos -> {Cuenta cuenta = new Cuenta();
+                .map(cuentaDaos -> {
+                    Cuenta cuenta = new Cuenta();
                     cuenta.setNumero_cuenta(cuentaDaos.getNumero_cuenta());
                     cuenta.setTipo_cuenta(cuentaDaos.getTipo_cuenta());
                     cuenta.setSaldo(cuentaDaos.getSaldo());
@@ -115,6 +116,7 @@ public class CuentaServiceImpl implements CuentaService {
                         response -> Mono.error(new RuntimeException("Error del servidor: " + response.statusCode()))
                 )
                 .bodyToMono(Cliente.class)
-                .switchIfEmpty(Mono.error(new RuntimeException("El cuerpo esta vacio"))); // Mapea la respuesta a la clase Cliente
+                // Mapea la respuesta a la clase Cliente
+                .switchIfEmpty(Mono.error(new RuntimeException("El cuerpo esta vacio")));
     }
 }
