@@ -18,9 +18,10 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @Service
 public class CuentaServiceImpl implements CuentaService {
-    public CuentaServiceImpl(CuentaRepository repository, WebClient.Builder webClientBuilder) {
+
+    public CuentaServiceImpl(CuentaRepository repository, WebClient webClient) {
         this.repository = repository;
-        this.webClient = webClientBuilder.baseUrl("http://localhost:8080").build();
+        this.webClient = webClient;
     }
 
     private final CuentaRepository repository;
